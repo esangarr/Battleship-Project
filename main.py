@@ -73,7 +73,6 @@ def register_boat(boat, size, direction):
         case "v":
             input_cordinates(boat, size)
 
-
     return boat
     
 def get_user_boat():
@@ -86,7 +85,7 @@ def get_user_boat():
 
     while valid_boat(boat) == False:
         print("El barco se sale del tablero, por favor cloca totrio barco.")
-        boat = register_boat(boat, size)
+        boat = register_boat(boat, size, direction)
 
     print(boat)
     return boat
