@@ -22,6 +22,7 @@ reference_board = []
     - Comentarios en las fucnines describiendo su funcion
     - Comentarios más especificos
     -  Filtro de colisiones entre barcos (Si se colocan dos barcos en un mismo lugar)
+    
 """
 
 def create_board():
