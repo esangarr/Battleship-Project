@@ -54,12 +54,12 @@ def clean_cordinates(cordinate):
 
     return c_int
 
-def input_cordinates(boat, size, i1,i2):
+def input_cordinates(boat, size):
     for i in range(1, size+1):                   
         xy =  input(f"\nCordenada x,y punto {i} : ")
         xy = clean_cordinates(xy)
-        boat.append(xy[i1])
-        boat.append(xy[i2])
+        boat.append(xy[1])
+        boat.append(xy[0])
 
 def register_boat(boat, size, direction):
     #Hacer filtro para que no importa como registre el usuario el bote 
