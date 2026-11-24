@@ -32,7 +32,7 @@ reference_board = []
 def create_board():
     board = ["  1 2 3 4 5 6 7 8 9 10"]
     for i in range(1,10+1):
-        board.append(f"{i} - - - - - - - - - -")
+        board.append(f"{i} ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
     return board
 
 print(f"⋆༺𓆩☠︎︎𓆪༻⋆¡Bienvenido a la Batalla Naval!⋆༺𓆩☠︎︎𓆪༻⋆\n ")
@@ -44,15 +44,13 @@ def loading():
 
 
 def print_board(board):
+    loading()
     for i in range(0, len(board)):
         if i < 10:
             print(" " + board[i]) # Agrega un espacio visual a las filas 1-9
         else:
             print(board[i])
-    loading()
-    print("El tablero se generó exitosamente")
-    for i in board:
-        print(i)
+    print(f"\n-------- El tablero se generó exitosamente --------")
 
 def valid_direction(boat, direction):
     match direction:
@@ -79,6 +77,9 @@ def valid_direction(boat, direction):
                         valid = False
                     else:
                         valid = True
+
+            case _:
+                valid = False
                    
     return valid
 
@@ -116,7 +117,6 @@ def filter_direction(boat, size, direction):
     match direction.lower():
         case "h":
             input_coordinates(boat, size)
-
             if boat[0] != boat[2]:
                 for i in range(0, len(boat), 2):
                     boat[i], boat[i+1] = boat[i+1], boat[i]
@@ -124,6 +124,13 @@ def filter_direction(boat, size, direction):
         case "v":
             input_coordinates(boat, size)
             if boat[1] != boat[3]:
+                for i in range(0, len(boat), 2):
+                    boat[i], boat[i+1] = boat[i+1], boat[i]
+
+        case _:
+            print("No se selecciono direccion valida - Usando dirección predeterminada (Horizontal)")
+            input_coordinates(boat, size)
+            if boat[0] != boat[2]:
                 for i in range(0, len(boat), 2):
                     boat[i], boat[i+1] = boat[i+1], boat[i]
 
@@ -166,12 +173,11 @@ def avoid_colitions(boat, boats):
                 
     return False
 
-
 def create_user_boat(board):
-    print(f"Coloca tus barcos en el tablero ☸")
     player_board = board
-    print_board(player_board)
     boats = []
+    print_board(player_board)
+    print(f"\nColoca tus barcos en el tablero ☸")
 
     size = 2
     for i in range(1,3+1):
@@ -191,7 +197,7 @@ def create_user_boat(board):
             
             elementos_fila = player_board[row].split(" ")
             
-            elementos_fila[column] = "B"
+            elementos_fila[column] = "𓊝"
             
             player_board[row] = " ".join(elementos_fila)
 
