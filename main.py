@@ -30,8 +30,11 @@ def create_board():
     return board
 
 def print_board(board):
-    for i in board:
-        print(i)
+    for i in range(0, len(board)):
+        if i < 10:
+            print(" " + board[i]) # Agrega un espacio visual a las filas 1-9
+        else:
+            print(board[i])
 
 def valid_direction(boat, direction):
     match direction:
@@ -132,17 +135,37 @@ def get_user_boat(size):
 
     return boat
 
+def avoid_colitions(boat, boats):
+    
+    boat_coord = []
+    for i in range(0, len(boat), 2):
+        boat_coord.append((boat[i], boat[i+1]))
+
+    for b in boats:
+        for i in range(0, len(b), 2):
+            par_existente = (b[i], b[i+1])
+            
+            if par_existente in boat_coord:
+                return True
+                
+    return False
+
 def create_user_boad(board):
     player_board = board
-
+    print_board(player_board)
     boats = []
 
     size = 2
     for i in range(1,3+1):
-        print_board(player_board)
         print(f"\n--------------- Creando barco {i} ---------------")
-        
-        boat = get_user_boat(size)
+
+        while True:
+            boat = get_user_boat(size)
+            if avoid_colitions(boat, boats):
+                print("¡Error! Ese barco choca con otro. Intenta en otra posición.")
+            else:
+                break
+        #boat = get_user_boat(size)
 
         for j in range(0, len(boat), 2):
             row = boat[j]
@@ -156,8 +179,8 @@ def create_user_boad(board):
 
         boats.append(boat)
         print(f"\n--------------- Barco {i} Creado ---------------")
-        print_board(player_board)
 
+        print_board(player_board)
         size += 1
 
 
