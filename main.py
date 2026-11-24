@@ -1,26 +1,17 @@
-#Prueba commit nati
-bot_board = []
-reference_board = []
+
 
 """Objetivos de hoy
-    - Lograr crear tablero de jugador
     - Comentarios para funciones
-    - Print entre cada proceso
-    - Depurar errores que pueda cometer el usuario
 
     Completado
     - Y se pueden agregar botes al tablero
+    -  Filtro de colisiones entre barcos (Si se colocan dos barcos en un mismo lugar)
 
-    Por Decidir (Con mi nati)
-    - Por ahora genera solo dos botes (se puede cambiar en el for linea 90) no se ha decidido la cantidad
-    - No se si meter el filtro de direcciones
-    - Hay muchos erroere suq epuede cometer el usuario que se pueden depurar
     
     Faltante
     - Prints cada que haceer algo (mejora experiencia)
     - Comentarios en las fucnines describiendo su funcion
     - Comentarios más especificos
-    -  Filtro de colisiones entre barcos (Si se colocan dos barcos en un mismo lugar)
 
     otras cosas
     - si escribe mal las coordenadas (con un espacio en lugar de coma o letras)
@@ -35,13 +26,10 @@ def create_board():
         board.append(f"{i} ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
     return board
 
-print(f"⋆༺𓆩☠︎︎𓆪༻⋆¡Bienvenido a la Batalla Naval!⋆༺𓆩☠︎︎𓆪༻⋆\n ")
-
 def loading():
     print("Cargando ҉")
     for l in range(0,2):
         print("*\n~")
-
 
 def print_board(board):
     loading()
@@ -79,8 +67,51 @@ def valid_direction(boat, direction):
                         valid = True
 
             case _:
-                valid = False
+                h_list = []
+                for e in range(0, len(boat), 2):
+                    h_list.append(boat[e])
+                    
+                right_e = h_list[0]
+                for j in h_list:
+                    if right_e != j:
+                        valid = False
+                    else:
+                        valid = True
                    
+    return valid
+
+def valid_continuity(boat, direction):
+
+    match direction:
+        case "h":
+            h_list = []
+            for e in range(1, len(boat), 2):
+                h_list.append(boat[e])
+
+            x = h_list[0]
+
+            for e in h_list:
+                if x != e:
+                    valid = False
+                else:
+                    valid = True
+                
+                x = x + 1 
+
+        case "v":
+            v_list = []
+            for e in range(0, len(boat), 2):
+                v_list.append(boat[e])
+            
+            x = v_list[0]
+            for e in v_list:
+                if x != e:
+                    valid = False
+                else:
+                    valid = True
+                            
+                x = x + 1 
+
     return valid
 
 def valid_boat(boat):
@@ -156,6 +187,12 @@ def get_user_boat(size):
         boat = filter_direction(boat, size, direction)
         valid_direction(boat, direction)
 
+    while valid_continuity(boat, direction) == False:
+        boat = []
+        print("El barco no es continuo. Vuelve a revisar tus coordenadas y coloca otro barco.")
+        boat = filter_direction(boat, size, direction)
+        valid_continuity(boat, direction)
+        
     return boat
 
 def avoid_colitions(boat, boats):
@@ -197,7 +234,7 @@ def create_user_boat(board):
             
             elementos_fila = player_board[row].split(" ")
             
-            elementos_fila[column] = "𓊝"
+            elementos_fila[column] = "B"
             
             player_board[row] = " ".join(elementos_fila)
 
@@ -211,6 +248,7 @@ def create_user_boat(board):
     print(boats)
 
 def main(args=0):
+    print(f"⋆༺𓆩☠︎︎𓆪༻⋆¡Bienvenido a la Batalla Naval!⋆༺𓆩☠︎︎𓆪༻⋆\n ")
     create_user_boat(create_board())
 
 if __name__ == "__main__":
