@@ -1,4 +1,3 @@
-import random as rd
 
 bot_board = []
 reference_board = []
@@ -34,17 +33,47 @@ def print_board(board):
     for i in board:
         print(i)
 
+def valid_direction(boat, direction):
+    match direction:
+            case "h":
+                h_list = []
+                for e in range(0, len(boat), 2):
+                    h_list.append(boat[e])
+    
+                right_e = h_list[0]
+                for j in h_list:
+                    if right_e != j:
+                        valid = False
+                    else:
+                        valid = True
+    
+            case "v":
+                v_list = []
+                for e in range(1, len(boat), 2):
+                    v_list.append(boat[e])
+        
+                right_e = v_list[1]
+                for j in v_list:
+                    if right_e != j:
+                        valid = False
+                    else:
+                        valid = True
+                   
+    return valid
+
 def valid_boat(boat):
 
     if boat == []:
         return False
 
     valid = True
+    
     for c in boat:
         if c > 10:
             valid = False
         else:
             valid = True
+
     return valid
 
 def clean_cordinates(cordinate):
@@ -61,33 +90,46 @@ def input_cordinates(boat, size):
         boat.append(xy[1])
         boat.append(xy[0])
 
-def register_boat(boat, size, direction):
-    #Hacer filtro para que no importa como registre el usuario el bote 
-    #si ya dijo que era horizontal o verticcal se mantenga asi
-
-    #Aun no esta hecho por eso se veredundante el match
+def filter_direction(boat, size, direction):
     match direction.lower():
         case "h":
             input_cordinates(boat, size)
 
+            if boat[0] != boat[2]:
+                for i in range(0, len(boat), 2):
+                    boat[i], boat[i+1] = boat[i+1], boat[i]
+
         case "v":
             input_cordinates(boat, size)
+            if boat[1] != boat[3]:
+                for i in range(0, len(boat), 2):
+                    boat[i], boat[i+1] = boat[i+1], boat[i]
 
     return boat
+
+def get_user_boat(size):
     
-def get_user_boat():
-    size = int(input("\nIngrese el tamaño de su bote: "))
     direction = input("\nIngrese la direccion del bote (v-h): ")
 
     boat = []
 
-    boat = register_boat(boat, size, direction)
+    boat = filter_direction(boat, size, direction)
 
-    while valid_boat(boat) == False:
-        print("El barco se sale del tablero, por favor cloca totrio barco.")
-        boat = register_boat(boat, size, direction)
+    while valid_boat(boat) == False :
+        boat = []
+        print("El barco se sale del tablero. Por favor coloca otro barco.")
+        boat = filter_direction(boat, size, direction)
+        valid_boat(boat)
 
-    print(boat)
+        print(valid_boat(boat))
+        print(boat)
+
+    while valid_direction(boat, direction) == False:
+        boat = []
+        print("El barco no es linea recta. Por favor coloca otro barco.")
+        boat = filter_direction(boat, size, direction)
+        valid_direction(boat, direction)
+
     return boat
 
 def create_user_boad(board):
@@ -95,10 +137,12 @@ def create_user_boad(board):
 
     boats = []
 
-    for i in range(1,2+1):
+    size = 2
+    for i in range(1,3+1):
         print_board(player_board)
         print(f"\n--------------- Creando barco {i} ---------------")
-        boat = get_user_boat()
+        
+        boat = get_user_boat(size)
 
         for j in range(0, len(boat), 2):
             row = boat[j]
@@ -113,6 +157,8 @@ def create_user_boad(board):
         boats.append(boat)
         print(f"\n--------------- Barco {i} Creado ---------------")
         print_board(player_board)
+
+        size += 1
 
 
     print(boats)
