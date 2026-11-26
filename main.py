@@ -1,4 +1,4 @@
-
+import random as rd
 
 """Objetivos de hoy
     - Comentarios para funciones
@@ -12,6 +12,7 @@
     - Prints cada que haceer algo (mejora experiencia)
     - Comentarios en las fucnines describiendo su funcion
     - Comentarios más especificos
+    - Filtro de fomato para coordenadas x,y
 
     otras cosas
     - si escribe mal las coordenadas (con un espacio en lugar de coma o letras)
@@ -30,6 +31,17 @@ def loading():
     print("Cargando ҉")
     for l in range(0,2):
         print("*\n~")
+
+def boat_to_board(boat, board):
+    for j in range(0, len(boat), 2):
+        row = boat[j]
+        column = boat[j+1]
+                
+        elementos_fila = board[row].split(" ")
+                
+        elementos_fila[column] = "B"
+                
+        board[row] = " ".join(elementos_fila)
 
 def print_board(board):
     loading()
@@ -81,7 +93,7 @@ def valid_direction(boat, direction):
     return valid
 
 def valid_continuity(boat, direction):
-
+    valid = True
     match direction:
         case "h":
             h_list = []
@@ -119,13 +131,20 @@ def valid_boat(boat):
     if boat == []:
         return False
 
+    states = []
     valid = True
     
     for c in boat:
         if c > 10:
-            valid = False
+            states.append(False)
         else:
-            valid = True
+            states.append(True)
+
+    if False in states:
+        valid = False
+    else:
+        valid = True
+
 
     return valid
 
@@ -138,6 +157,7 @@ def clean_coordinates(coordinate):
 
 def input_coordinates(boat, size):
     print("\nIngresa las coordenadas del tablero donde quieres colocar tu barco. Ingrésalas como x,y (ejemplo: 1,2)")
+    
     for i in range(1, size+1):                   
         xy =  input(f"\nTus coordenadas x,y en el punto {i}: ")
         xy = clean_coordinates(xy)
@@ -195,6 +215,45 @@ def get_user_boat(size):
         
     return boat
 
+def generate_random_boat(size):
+    d_int = rd.randint(1,2)
+    
+    direction = " "
+    match d_int:
+        case 1:
+            direction = "h"
+        case 2:
+            direction = "v"
+
+    boat = [rd.randint(1,10), rd.randint(1,10)]
+    for i in range(1, size):
+
+        match direction:
+            case "h":
+                boat.append(boat[0])
+                boat.append(boat[1]+i)
+
+            case "v":
+                boat.append(boat[0]+i)
+                boat.append(boat[1])
+
+    return boat
+
+def random_boat_filtered(size):
+    
+    boat = []
+
+    boat = generate_random_boat(size)
+    
+    while valid_boat(boat) == False :
+        boat = []
+        print("El barco generado se sale del tablero...")
+        print("Generando nuevo barco")
+        boat = generate_random_boat(size)
+        valid_boat(boat)
+
+    return boat
+ 
 def avoid_colitions(boat, boats):
     
     boat_coord = []
@@ -210,8 +269,36 @@ def avoid_colitions(boat, boats):
                 
     return False
 
-def create_user_boat(board):
-    player_board = board
+def create_bot_boats():
+    bot_board = create_board()
+    boats = []
+
+    print_board(bot_board)
+
+    size = 2
+    for _ in range(1,3+1):
+
+        while True:
+            boat = random_boat_filtered(size)
+            print(boat)
+            if avoid_colitions(boat, boats):
+                print("¡Error! Ese barco choca con otro. Intenta en otra posición.")
+            else:
+                break
+
+        boat_to_board(boat, bot_board)
+
+        boats.append(boat)
+        print_board(bot_board)
+
+        size += 1
+
+    print(boats)
+    return bot_board
+
+
+def create_user_board():
+    player_board = create_board()
     boats = []
     print_board(player_board)
     print(f"\nColoca tus barcos en el tablero ☸")
@@ -226,17 +313,8 @@ def create_user_boat(board):
                 print("¡Error! Ese barco choca con otro. Intenta en otra posición.")
             else:
                 break
-        #boat = get_user_boat(size)
 
-        for j in range(0, len(boat), 2):
-            row = boat[j]
-            column = boat[j+1]
-            
-            elementos_fila = player_board[row].split(" ")
-            
-            elementos_fila[column] = "B"
-            
-            player_board[row] = " ".join(elementos_fila)
+        boat_to_board(boat, player_board)
 
         boats.append(boat)
         print(f"\n--------------- Barco {i} Creado  𓊝  Tamaño: {size}---------------")
@@ -244,12 +322,13 @@ def create_user_boat(board):
         print("\n")
         size += 1
 
-
     print(boats)
+    return player_board
 
 def main(args=0):
     print(f"⋆༺𓆩☠︎︎𓆪༻⋆¡Bienvenido a la Batalla Naval!⋆༺𓆩☠︎︎𓆪༻⋆\n ")
-    create_user_boat(create_board())
+    #create_user_board()
+    create_bot_boats()
 
 if __name__ == "__main__":
     main()
