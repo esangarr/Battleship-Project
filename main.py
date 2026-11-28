@@ -1,23 +1,28 @@
 import random as rd
 
 """Objetivos de hoy
-    - Comentarios para funciones
+    - Funciones para disparar
+    - Tabero de referencia
+    - Ciclo principal
+    - Funcionamiento completo
 
     Completado
     - Y se pueden agregar botes al tablero
-    -  Filtro de colisiones entre barcos (Si se colocan dos barcos en un mismo lugar)
-
-    
-    Faltante
-    - Prints cada que haceer algo (mejora experiencia)
-    - Comentarios en las fucnines describiendo su funcion
-    - Comentarios más especificos
-    - Filtro de fomato para coordenadas x,y
-
-    otras cosas
+    - Filtro de colisiones entre barcos (Si se colocan dos barcos en un mismo lugar)
     - si escribe mal las coordenadas (con un espacio en lugar de coma o letras)
     - si encima los barcos
     - el 10 en el tablero desacomodando la fila
+    - Filtro de fomato para coordenadas x,y
+
+    
+    Faltante
+
+
+    otras cosas
+    - Comentarios para funciones
+    - Prints cada que haceer algo (mejora experiencia)
+    - Comentarios en las fucnines describiendo su funcion
+    - Comentarios más especificos
 
 """
 
@@ -148,19 +153,36 @@ def valid_boat(boat):
 
     return valid
 
-def clean_coordinates(coordinate):
-    c_string = coordinate.strip()
-    c_string = coordinate.split(",")
-    c_int = [int(c_string[0]), int(c_string[1])]
-
+def clean_coordinates(i):
+    while True:
+        xy = input(f"us coordenadas (x,y) en el punto {i}: ")
+        xy_splited = xy.split(",")
+            
+        if len(xy_splited) != 2:
+            print("Formato inválido. Usa el formato x,y (ejemplo: 3,4).")
+            continue
+                
+        try:
+            x = int(xy_splited[0].strip())
+            y = int(xy_splited[1].strip())
+        except ValueError:
+            print("Solo se permiten números enteros.")
+            continue
+                
+        if not (1 <= x <= 10 and 1 <= y <= 10):
+            print("Las coordenadas deben estar entre 1 y 10.")
+            continue
+                
+        c_int = [x, y]
+        break
+    
     return c_int
-
+    
 def input_coordinates(boat, size):
     print("\nIngresa las coordenadas del tablero donde quieres colocar tu barco. Ingrésalas como x,y (ejemplo: 1,2)")
     
     for i in range(1, size+1):                   
-        xy =  input(f"\nTus coordenadas x,y en el punto {i}: ")
-        xy = clean_coordinates(xy)
+        xy = clean_coordinates(i)
         boat.append(xy[1])
         boat.append(xy[0])
 
@@ -296,7 +318,6 @@ def create_bot_boats():
     print(boats)
     return bot_board
 
-
 def create_user_board():
     player_board = create_board()
     boats = []
@@ -327,8 +348,8 @@ def create_user_board():
 
 def main(args=0):
     print(f"⋆༺𓆩☠︎︎𓆪༻⋆¡Bienvenido a la Batalla Naval!⋆༺𓆩☠︎︎𓆪༻⋆\n ")
-    #create_user_board()
-    create_bot_boats()
+    create_user_board()
+    #create_bot_boats()
 
 if __name__ == "__main__":
     main()
